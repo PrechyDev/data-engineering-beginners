@@ -8,7 +8,7 @@ import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
 
-url = 'https://en.wikipedia.org/wiki/List_of_largest_banks'
+url = 'https://web.archive.org/web/20230908091635 /https://en.wikipedia.org/wiki/List_of_largest_banks'
 initial_attr = ['Name', 'MC_USD_Billion']
 #final_attr = ['Name', 'MC_USD_Billion', 'MC_GBP_Billion', 'MC_EUR_Billion', 'MC_INR_Billion']
 csv_path = './Largest_banks_data.csv'
@@ -37,10 +37,11 @@ def extract(url, initial_attr):
 
     for row in rows:
         col = row.find_all('td')
-        #remove \n and add to dict
         if len(col) != 0:
-            data_dict = {"Name": col[1].text.replace('\n', ''), 
-                            "MC_USD_Billion": float(col[2].contents[0].replace('\n', ''))}
+            name = col[1].text.replace('\n', '')
+            mc = col[2].contents[0].replace('\n', '')
+            data_dict = {"Name": name, 
+                            "MC_USD_Billion": float(mc)}
             df1 = pd.DataFrame(data_dict, index=[0])
             df = pd.concat([df,df1], ignore_index=True)
         
